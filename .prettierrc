@@ -1,5 +1,0 @@
-{
-  "lint-staged": {
-    "**/**": "prettier --writer --ignore-unknown"
-  }
-}
