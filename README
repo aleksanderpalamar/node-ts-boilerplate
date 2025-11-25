@@ -4,7 +4,7 @@ This is a **Clean Architecture** Node.js/TypeScript backend boilerplate using Ex
 
 ### Layer Structure
 
-```txt
+```bash
 src/
 ├── core/ # Domain layer (business logic, no dependencies on infra)
 │ ├── domain/entities/ # Domain entities (e.g., User.ts)
