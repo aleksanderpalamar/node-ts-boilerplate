@@ -1,6 +1,6 @@
 import { User } from '@/core/domain/entities/User';
 import { IUserRepository } from '@/core/domain/interfaces/repositories/user-repository';
-import { prisma } from './client';
+import { prisma } from '../database/prisma/client';
 
 export class UserRepository implements IUserRepository {
   async findById(id: string) {
