@@ -1,0 +1,93 @@
+## Architecture Overview
+
+This is a **Clean Architecture** Node.js/TypeScript backend boilerplate using Express, Prisma ORM, and tsyringe for dependency injection.
+
+### Layer Structure
+
+```txt
+src/
+├── core/ # Domain layer (business logic, no dependencies on infra)
+│ ├── domain/entities/ # Domain entities (e.g., User.ts)
+│ ├── domain/interfaces/ # Repository interfaces (contracts)
+│ └── usecases/ # Application use cases
+├── infra/ # Infrastructure layer
+│ ├── database/prisma/ # Prisma client
+│ ├── http/express/ # Express server, routes
+│ └── repositories/ # Repository implementations
+├── application/controllers/ # HTTP controllers (resolve use cases from DI container)
+└── shared/container/ # tsyringe DI container registration
+```
+
+### Data Flow Pattern
+
+1. **Route** → **Controller** → **UseCase** → **Repository Interface** → **Prisma Repository**
+2. Controllers resolve use cases via `container.resolve(UseCase)`
+3. Use cases receive repository interfaces via constructor injection with `@inject('RepositoryName')`
+
+## Key Conventions
+
+### Dependency Injection (tsyringe)
+
+- Register implementations in `src/shared/container/index.ts`
+- Use string tokens for injection: `@inject('UserRepository')`
+- Controllers resolve use cases: `container.resolve(CreateUserUseCase)`
+
+```typescript
+// Registration pattern (shared/container/index.ts)
+container.register('UserRepository', { useClass: UserRepository });
+// Injection pattern (use cases)
+@injectable()
+export class SomeUseCase {
+  constructor(@inject('UserRepository') private repo: IUserRepository) {}
+}
+```
+
+### Entity Pattern
+
+- Entities are simple classes with public readonly `id` and public/private properties
+- Use getter methods for private fields (e.g., `getPassword()`), entities encapsulate business rules and invariants (e.g., validate email format, normalize name, etc.)
+- Create new entities with `crypto.randomUUID()` for IDs
+
+### Repository Pattern
+
+Repositories must return domain entities, never Prisma raw objects.
+
+- Define interfaces in `core/domain/interfaces/repositories/`
+- Implement in `infra/repositories/`
+- Repositories convert Prisma rows to domain entities
+
+## Commands
+
+| Command          | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| `npm run dev`    | Start dev server with hot reload (ts-node-dev) |
+| `npm run build`  | Compile TypeScript to `dist/`                  |
+| `npm start`      | Run compiled production build                  |
+| `npm test`       | Run tests with Vitest                          |
+| `npm run lint`   | ESLint check                                   |
+| `npm run format` | Prettier format all files                      |
+
+## Database (Prisma)
+
+- Schema: `prisma/schema.prisma` (SQLite by default)
+- Config: `prisma.config.ts` uses `DATABASE_URL` env var
+- Client singleton: `src/infra/database/prisma/client.ts`
+- Run migrations: `npx prisma migrate dev`
+
+## Path Aliases
+
+Use `@/` prefix for imports from `src/`:
+
+```typescript
+import { User } from '@/core/domain/entities/User';
+```
+
+## Adding New Features
+
+1. Create entity in `core/domain/entities/`
+2. Define repository interface in `core/domain/interfaces/repositories/`
+3. Implement repository in `infra/repositories/`
+4. Register in `shared/container/index.ts`
+5. Create use case in `core/usecase/`
+6. Create controller in `application/controllers/`
+7. Add route in `infra/http/express/routes.ts`
