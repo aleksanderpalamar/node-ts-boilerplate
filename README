@@ -6,16 +6,16 @@ This is a **Clean Architecture** Node.js/TypeScript backend boilerplate using Ex
 
 ```bash
 src/
-├── core/ # Domain layer (business logic, no dependencies on infra)
-│ ├── domain/entities/ # Domain entities (e.g., User.ts)
-│ ├── domain/interfaces/ # Repository interfaces (contracts)
-│ └── usecases/ # Application use cases
-├── infra/ # Infrastructure layer
-│ ├── database/prisma/ # Prisma client
-│ ├── http/express/ # Express server, routes
-│ └── repositories/ # Repository implementations
-├── application/controllers/ # HTTP controllers (resolve use cases from DI container)
-└── shared/container/ # tsyringe DI container registration
+  core/                     # Domain layer (business logic)
+    domain/entities/        # Entities (e.g., User.ts)
+    domain/interfaces/      # Repository interfaces (contracts)
+    usecases/               # Application use cases
+  infra/                    # Infrastructure layer
+    database/prisma/        # Prisma client
+    http/express/           # Express server & routes
+    repositories/           # Repository implementations
+  application/controllers/  # HTTP controllers
+  shared/container/         # DI container (tsyringe)
 ```
 
 ### Data Flow Pattern
