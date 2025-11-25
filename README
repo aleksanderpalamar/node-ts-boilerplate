@@ -5,18 +5,18 @@ This is a **Clean Architecture** Node.js/TypeScript backend boilerplate using Ex
 ### Layer Structure
 
 ```
-src/
-│── core/                  # Domain layer
-│   ├── domain/entities/   # Entities
-│   ├── domain/interfaces/ # Repository interfaces
-│   └── usecases/          # Use cases
-│
-├── infra/
-│   ├── http/express/      # Express server & routes
-│   ├── database/prisma/   # Prisma client
-│   └── repositories/      # Repository implementations
-│
-└── application/controllers/ # HTTP controllers
+ src/
+ ├── core/                     # Domain layer
+ │   ├── domain/entities/      # Entities
+ │   ├── domain/interfaces/    # Repository interfaces
+ │   └── usecases/             # Use cases
+
+ ├── infra/                    # Infrastructure layer
+ │   ├── http/express/         # Express server & routes
+ │   ├── database/prisma/      # Prisma client
+ │   └── repositories/         # Repository implementations
+
+ └── application/controllers/  # HTTP controllers
 ```
 
 ### Data Flow Pattern
