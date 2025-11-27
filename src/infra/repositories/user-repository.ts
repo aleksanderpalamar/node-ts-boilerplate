@@ -15,15 +15,21 @@ export class UserRepository implements IUserRepository {
     return new User(row.id, row.name, row.email, row.password);
   }
 
-  async create(user: User) {
+  async create(user: User): Promise<User> {
     const row = await prisma.user.create({
       data: {
-        id: user.id,
         name: user.name,
         email: user.email,
-        password: user.getPassword(),
+        password: user.password,
       },
     });
     return new User(row.id, row.name, row.email, row.password);
+  }
+
+  async findAll() {
+    const rows = await prisma.user.findMany();
+    return rows.map(
+      (row) => new User(row.id, row.name, row.email, row.password),
+    );
   }
 }

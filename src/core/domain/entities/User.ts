@@ -3,10 +3,6 @@ export class User {
     public readonly id: string,
     public name: string,
     public email: string,
-    private password: string,
+    public password: string,
   ) {}
-
-  getPassword(): string {
-    return this.password;
-  }
 }

@@ -1,19 +1,16 @@
-import { container } from 'tsyringe';
 import { Request, Response } from 'express';
-import { CreateUserUseCase } from '@/core/usecases/CreateUserUseCase';
+import { injectable, inject, delay } from 'tsyringe';
+import { CreateUserUseCase } from '@/application/usecases/CreateUserUseCase';
 
+@injectable()
 export class CreateUserController {
-  async handle(req: Request, res: Response) {
-    const usecase = container.resolve(CreateUserUseCase);
+  constructor(
+    @inject(delay(() => CreateUserUseCase))
+    private createUserUseCase: CreateUserUseCase,
+  ) {}
 
-    const { name, email, password } = req.body;
-    try {
-      const user = await usecase.execute({ name, email, password });
-      return res.status(201).json(user);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'An unknown error occurred';
-      return res.status(400).json({ error: message });
-    }
+  async handle(req: Request, res: Response): Promise<Response> {
+    const user = await this.createUserUseCase.execute(req.body);
+    return res.status(201).json(user);
   }
 }
